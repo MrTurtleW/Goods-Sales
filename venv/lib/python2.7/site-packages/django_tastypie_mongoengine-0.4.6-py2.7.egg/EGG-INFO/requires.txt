@@ -1,0 +1,9 @@
+Django>=1.5
+django-tastypie>=0.9.12
+mongoengine>=0.8.1,<0.8.2
+python-dateutil>=2.1
+lxml
+defusedxml
+PyYAML
+biplist
+python-mimeparse>=0.1.4
