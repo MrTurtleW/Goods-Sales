@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Goods Sales</title>
+	<meta charset="utf-8">
+	<link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/static/css/bootstrap/bootstrap-datetimepicker.css">
+	<script src='/static/javascript/echarts.js'></script>
+	<script src='https://cdn.bootcss.com/jquery/2.2.4/jquery.js'></script>
+	<script src="/static/javascript/bootstrap-datetimepicker.js"></script>
+	<script src="/static/javascript/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+	<script src='https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.js'></script>
+	<style type="text/css">
+		.chart{
+			width: 600px;
+			height: 400px;
+			float: none;  
+			display: block;  
+			margin-left: auto;  
+			margin-right: auto;
+		}
+	</style>
+</head>
+<body>
+	<div class="fluid-container">
+		<div class="nav">
+			<ul class="nav nav-pills">
+				<li role="presentation"><a role="button" class="btn" data-toggle="modal"  id="btn_searchPrices">查询价格</a> </li>
+				<li role="presentation"><a role="button" class="btn" data-toggle="modal" id="btn_searchSales">查询销量</a> </li>
+				<li role="presentation"><a role="button" class="btn" id="btn_printCharts">绘制图表</a> </li>
+			</ul>
+		</div>
+		<div id="main" class='chart'></div>
+		<div id="main2" class="chart"></div>
+	</div>
+	<div class="modal fade" id="searchPrices" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">  
+			<div class="modal-content">  
+				<div class="modal-header">  
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>  
+					<h4 class="modal-title" id="myModalLabel">请输入商品ID和月份</h4>  
+				</div>  
+				<div class="modal-body">  
+					<div class="input-group">
+						<span class="input-group-addon" id="basic-addon1" >商品ID</span>
+						<input type="text" class="form-control" placeholder="商品ID" aria-describedby="basic-addon1" id="searchPricesID">
+					</div>
+					<div class="input-group">
+						<label for="dtp_input1" class="col-md-4 control-label">开始时间</label>
+						<div class="input-group date form_datetime " data-date="2013-01-01T00:000:00Z" data-date-format="yyyy-MM-dd HH:mm:ss" data-link-field="dtp_input1">
+							<input class="form-control" size="16" type="text" value="" readonly id="searchPricesDateStart">
+							<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+						</div>
+						<div class="input-group">
+							<label for="dtp_input1" class="col-md-4 control-label">结束时间</label>
+							<div class="input-group date form_datetime " data-date="2013-01-01T00:000:00Z" data-date-format="yyyy-MM-dd HH:mm:ss" data-link-field="dtp_input1">
+								<input class="form-control" size="16" type="text" value="" readonly id="searchPricesDateEnd">
+								<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+								<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+							</div>
+						</div>
+					</div>  
+					<div class="modal-footer">  
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+						<button type="button" class="btn btn-primary" id="searchPricesConfirm">确认</button>  
+					</div>  
+				</div>
+			</div><!-- /.modal-content -->  
+		</div><!-- /.modal-dialog -->  
+	</div><!-- /.modal -->  
+	<div class="modal fade" id="searchSales" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">  
+		<div class="modal-dialog">  
+			<div class="modal-content">  
+				<div class="modal-header">  
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>  
+					<h4 class="modal-title" id="myModalLabel">请输入商品ID</h4>  
+				</div>  
+				<div class="modal-body">  
+					<div class="input-group">
+						<span class="input-group-addon" id="basic-addon1">商品ID</span>
+						<input type="text" class="form-control" placeholder="商品ID" aria-describedby="basic-addon1" id="searchSalesID">
+					</div>
+				</div>  
+				<div class="modal-footer">  
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+					<button type="button" class="btn btn-primary" id="searchSalesConfirm">确认</button>  
+				</div>  
+			</div><!-- /.modal-content -->  
+		</div><!-- /.modal-dialog -->  
+	</div><!-- /.modal --> 
+	<div class="modal fade" id="printChart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">  
+		<div class="modal-dialog">  
+			<div class="modal-content">  
+				<div class="modal-header">  
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>  
+					<h4 class="modal-title" id="myModalLabel">请输入商品ID</h4>  
+				</div>  
+				<div class="modal-body">  
+					<div class="input-group">
+						<span class="input-group-addon" id="basic-addon1">商品ID</span>
+						<input type="text" class="form-control" placeholder="商品ID" aria-describedby="basic-addon1" id="printChartsID">
+					</div>
+				</div>  
+				<div class="modal-footer">  
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+					<button type="button" class="btn btn-primary" id="printChartsConfirm">确认</button>  
+				</div>  
+			</div><!-- /.modal-content -->  
+		</div><!-- /.modal-dialog -->  
+	</div><!-- /.modal -->
+	<script type="text/javascript">
+		$(document).ready(function(){
+			printCharts = function(){
+				var myChart = echarts.init(document.getElementById('main'));
+				var option={
+					title:{
+						text:'echart intro'
+					},
+					tooltip:{},
+					legeng:{
+						data:['sales']
+					},
+					xAxis:{
+						data:['good1','good2','good3','good4','good5','good6']
+					},
+					yAxis:{},
+					series:[{
+						name:'sales',
+						type:'bar',
+						data:[5,20,36,10,10,20]
+					}]
+				};
+				myChart.setOption(option);
+			}
+			// xAxisFunc = function(data){
+			// 	var baseDateStr = "2014-1-1 00:00:00"
+			// 	var base = +new Date(Date.parse(baseDateStr.replace(/-/g, "/")));
+			// 	var oneHour = 3600 * 1000;
+			// 	var date = [];
+			// 	var pricesData = {};
+			// 	var salesData = {};
+			// 	var ret = {};
+
+			// 	for(var i = 0; i < 12000; i++){
+			// 		var now = new Date(base);
+			// 		base += oneHour;
+			// 		var currentHour = now.getFullYear();
+			// 		if((now.getMonth()+1)<10){
+			// 			currentHour = currentHour + "-0" + (now.getMonth()+1);
+			// 		}
+			// 		else{
+			// 			currentHour = currentHour + "-" + (now.getMonth()+1);
+			// 		}
+			// 		if(now.getDate()<10){
+			// 			currentHour = currentHour + "-0" + now.getDate();
+			// 		}
+			// 		else{
+			// 			currentHour = currentHour + "-" + now.getDate();
+			// 		}
+			// 		if(now.getHours()<10){
+			// 			currentHour = currentHour + " 0" + now.getHours()+":00:00";
+			// 		}
+			// 		else{
+			// 			currentHour = currentHour + " " + now.getHours()+":00:00";
+			// 		}
+			// 		//console.log(currentHour);
+			// 		date.push(currentHour);
+			// 	}
+
+			// 	for(var o in data.objects){
+			// 		// var price = {};
+			// 		// price[data.objects[o].time] = data.objects[o].price;
+			// 		// pricesData.push(price);
+
+			// 		// var count = {}
+			// 		// count[data.objects[o].time] = data.objects[o].count;
+			// 		// salesData.push(count);
+			// 		pricesData[data.objects[o].time] = data.objects[o].price;
+			// 		salesData[data.objects[o].time] = data.objects[o].count;
+			// 	}
+			// 	ret.date = date;
+			// 	ret.pricesData = pricesData;
+			// 	ret.salesData = salesData;
+			// 	console.log(ret);
+			// 	return ret;
+			// }
+			xAxisFunc = function(){
+				var baseDateStr = "2014-1-1 00:00:00"
+				var base = +new Date(Date.parse(baseDateStr.replace(/-/g, "/")));
+				var oneHour = 3600 * 1000;
+				var date = [];
+
+				for(var i = 0; i < 1450; i++){
+					var now = new Date(base);
+					base += oneHour;
+					var currentHour = now.getFullYear();
+					if((now.getMonth()+1)<10){
+						currentHour = currentHour + "-0" + (now.getMonth()+1);
+					}
+					else{
+						currentHour = currentHour + "-" + (now.getMonth()+1);
+					}
+					if(now.getDate()<10){
+						currentHour = currentHour + "-0" + now.getDate();
+					}
+					else{
+						currentHour = currentHour + "-" + now.getDate();
+					}
+					if(now.getHours()<10){
+						currentHour = currentHour + " 0" + now.getHours()+":00:00";
+					}
+					else{
+						currentHour = currentHour + " " + now.getHours()+":00:00";
+					}
+					//console.log(currentHour);
+					date.push(currentHour);
+				}
+				return date;
+			}
+			dataFunc = function(data){
+				var ret = {};
+				var pricesData = [];
+				var salesData = [];
+
+				for(var o in data.objects){
+					pricesData.push({name:data.objects[o].time,value:data.objects[o].price});
+					salesData.push({name:data.objects[o].time,value:data.objects[o].count});
+				}
+
+				ret.pricesData = pricesData;
+				ret.salesData = salesData;
+				console.log(ret);
+				return ret;
+
+			}
+			printChart = function(d, date, id, title, hint){
+				var myChart = echarts.init(document.getElementById(id));
+				//console.log(d);
+				var option = {
+					tooltip:{
+						trigger: 'axis',
+						position: function(pt){
+							return [pt[0], '10%'];
+						}
+					},
+					title:{
+						left:'center',
+						text:title,
+					},
+					toolbox:{
+						feature:{
+							dataZoom:{
+								yAxisIndex:'none'
+							},
+							restore:{},
+							saveAsImage:{}
+						}
+					},
+					xAxis:{
+						type:'category',
+						boundaryGap:false,
+						data:date
+					},
+					yAxis:{
+						type:'value',
+						boundaryGap:[0, '100%']
+					},
+					dataZoom: [{
+						type: 'inside',
+						start: 0,
+						end: 10
+					}, {
+						start: 0,
+						end: 10,
+						handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+						handleSize: '80%',
+						handleStyle: {
+							color: '#fff',
+							shadowBlur: 3,
+							shadowColor: 'rgba(0, 0, 0, 0.6)',
+							shadowOffsetX: 2,
+							shadowOffsetY: 2
+						}
+					}],
+					series: [
+					{
+						name:hint,
+						type:'line',
+						smooth:true,
+						symbol: 'none',
+						sampling: 'average',
+						itemStyle: {
+							normal: {
+								color: 'rgb(255, 70, 131)'
+							}
+						},
+						// areaStyle: {
+						// 	normal: {
+						// 		color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+						// 			offset: 0,
+						// 			color: 'rgb(255, 158, 68)'
+						// 		}, {
+						// 			offset: 1,
+						// 			color: 'rgb(255, 70, 131)'
+						// 		}])
+						// 	}
+						// },
+						
+						data:d
+					}
+					]
+				}
+				myChart.setOption(option);
+			}
+			$("#btn_searchPrices").click(function(){
+				$("#searchPrices").modal();
+			})
+			$("#btn_searchSales").click(function(){
+				$("#searchSales").modal();
+			});
+			$("#btn_printCharts").click(function(){
+				$("#printChart").modal();
+			});
+
+			$("#printChartsConfirm").click(function(){
+				$("#printChart").modal("hide");
+				var goods_id = $("#printChartsID").val();
+
+				$.ajax({
+					type:"get",
+					url:"http://localhost:8000/api/v1/chart/?format=json&limit=0&goods_id="+goods_id,
+					success:function(data){
+						//console.log(data);
+						
+						var date = xAxisFunc();
+						//console.log(d);
+						var d = dataFunc(data);
+						printChart(d.pricesData, date, 'main', 'price', '价格数据');
+						printChart(d.salesData, date, 'main2', 'sale', '销量数据');
+					}
+				});
+			});
+			
+			$("#searchPricesConfirm").click(function(){
+				$("#searchPrices").modal("hide");
+				var goods_id = $("#searchPricesID").val();
+				var timeStart = $("#searchPricesDateStart").val();
+				var timeEnd = $("#searchPricesDateEnd").val();
+
+				//console.log(goods_id);
+				//console.log(timeStart);
+				//console.log(timeEnd);
+
+				$.ajax({
+					type:'get',
+					url:"http://localhost:8000/api/v1/prices/?format=json&goods_id="+goods_id+"&timeStart="+timeStart+"&timeEnd="+timeEnd,
+					success:function(data){
+						//console.log(data);
+						$("#main").html("");
+						$("#main2").html("");
+						$("#main").append("<h4>最高价格："+data.objects[0].max_price+"</h4>");
+                        $("#main").append("<h4>最低价格："+data.objects[0].min_price+"</h4>");
+                        $("#main").append("<h4>平均价格："+data.objects[0].avg_price+"</h4>");
+					}
+				})
+			});
+			$("#searchSalesConfirm").click(function(){
+				$("#searchSales").modal("hide");
+				var goods_id = $("#searchSalesID").val();
+				$.ajax({
+					type:'get',
+					url:"http://localhost:8000/api/v1/sales/?format=json&goods_id="+goods_id,
+					success:function(data){
+						//console.log(data);
+						$("#main").html("");
+						$("#main2").html("");
+						for(var o in data.objects){
+							$("#main").append("<h4>月份:"+data.objects[o].sold_month+", 销量:"+data.objects[o].count+"</h4>");
+						}
+					}
+				});
+			});
+			$('.form_datetime').datetimepicker({
+				language:  'zh-CN',
+				weekStart: 1,
+				todayBtn:  1,
+				autoclose: 1,
+				todayHighlight: 1,
+				startView: 2,
+				forceParse: 0,
+				showMeridian: 1
+			});
+		})
+	</script>
+</body>
+</html>
