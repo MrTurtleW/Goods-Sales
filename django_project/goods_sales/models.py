@@ -3,10 +3,10 @@ from mongoengine import fields
 
 # Create your models here.
 
-class test(Document):
+class goods_sales(Document):
     goods_id = fields.IntField()
-    sold_timestamp = fields.IntField()
-    sold_price = fields.FloatField()
+    sold_time = fields.DateTimeField()
+    sold_price = fields.DateTimeField()
 
 class Sales(Document):
     sold_month = fields.StringField()
@@ -21,4 +21,3 @@ class Charts(Document):
     count = fields.IntField()
     price = fields.FloatField()
     time = fields.StringField()
-

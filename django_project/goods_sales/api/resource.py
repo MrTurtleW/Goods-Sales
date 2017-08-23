@@ -2,10 +2,8 @@ from tastypie.authorization import Authorization
 from tastypie_mongoengine import resources
 from tastypie.resources import ALL
 from tastypie import fields
-
-import time
-
-from goods_sales.models import test, Sales, Prices, Charts
+from datetime import datetime
+from goods_sales.models import goods_sales, Sales, Prices, Charts
 
 
 class ReturnObject(object):
@@ -34,7 +32,7 @@ class ReturnObject(object):
 class MyModelResource(resources.MongoEngineResource):
 
     class Meta:
-        queryset = test.objects.all()
+        queryset = goods_sales.objects.all()
         allowed_methods = ('get')
         excludes = ['id']
         authorization = Authorization()
@@ -71,7 +69,7 @@ class SalesResource(resources.MongoEngineResource):
             print 'parameter error'
             return
 
-        queryset = test.objects(goods_id=self.gid)
+        queryset = goods_sales.objects(goods_id=self.gid)
         retList = []
         for q in queryset:
             time_local = time.localtime(q.sold_timestamp)
@@ -109,13 +107,11 @@ class PricesResource(resources.MongoEngineResource):
         except:
             print 'parameter error'
             return
-        
-        time_array = time.strptime(self.timeStart, '%Y-%m-%d %H:%M:%S')
-        start_timestamp = time.mktime(time_array)
-        time_array = time.strptime(self.timeEnd, '%Y-%m-%d %H:%M:%S')
-        end_timestamp = time.mktime(time_array)
 
-        queryset = test.objects(goods_id=self.gid, sold_timestamp__gte=start_timestamp, sold_timestamp__lt=end_timestamp)
+        time_start = datetime.strptime(self.timeStart, '%Y-%m-%d %H:%M:%S')
+        time_end = datetime.strptime(self.timeEnd, '%Y-%m-%d %H:%M:%S')
+
+        queryset = goods_sales.objects(goods_id=self.gid, sold_time__gte=time_start, sold_time__lt=time_end)
         if queryset is None:
             return
 
@@ -158,7 +154,7 @@ class ChartResource(resources.MongoEngineResource):
             print 'parameter error'
             return
 
-        queryset = test.objects(goods_id=self.gid)
+        queryset = goods_sales.objects(goods_id=self.gid)
         retList = []
         current_prices = []
         current_hour = ""
