@@ -15,10 +15,8 @@ def insert_data():
     collection = db['goods_sales']
 
     max_goods_number = 1000
-    max_sales_number = 10000
+    max_sales_number = 1000
     start_dt = "2014-01-01 00:00:00"
-
-    
 
     for goods_id in xrange(max_goods_number*0, max_goods_number*1):
 
@@ -34,9 +32,9 @@ def insert_data():
         for sales_count in xrange(max_sales_number):
 
             # 计算商品售出时间，随机递增
-            seconds = random.randint(1000, 2000)
-            sold_time = sold_time + datetime.timedelta(seconds = seconds)
-            
+            seconds = random.randint(5000, 10000)
+            sold_time = sold_time + datetime.timedelta(seconds=seconds)
+
             # 商品售出价格
             if current_price_times >= max_price_times:
                 max_price_times = random.randint(20, 30)

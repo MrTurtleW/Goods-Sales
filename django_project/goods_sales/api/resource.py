@@ -3,7 +3,7 @@ from tastypie_mongoengine import resources
 from tastypie.resources import ALL
 from tastypie import fields
 from datetime import datetime
-from goods_sales.models import goods_sales, Sales, Prices, Charts
+from goods_sales.models import goods_sales
 
 
 class ReturnObject(object):
@@ -29,6 +29,7 @@ class ReturnObject(object):
     def to_dict(self):
         return self._data
 
+
 class MyModelResource(resources.MongoEngineResource):
 
     class Meta:
@@ -37,17 +38,17 @@ class MyModelResource(resources.MongoEngineResource):
         excludes = ['id']
         authorization = Authorization()
 
+
 class SalesResource(resources.MongoEngineResource):
 
     sold_month = fields.CharField(attribute='sold_month')
     count = fields.IntegerField(attribute='count')
 
     class Meta:
-        queryset = Sales.objects.all()
         allowed_methods = ('get')
         authorization = Authorization()
         resource_name = 'sales'
-        excludes = ['id', 'resource_uri']
+        excludes = ['resource_uri']
 
     def check_exist(self, lists, month):
         if len(lists) == 0:
@@ -72,8 +73,8 @@ class SalesResource(resources.MongoEngineResource):
         queryset = goods_sales.objects(goods_id=self.gid)
         retList = []
         for q in queryset:
-            time_local = time.localtime(q.sold_timestamp)
-            sold_month = time.strftime("%Y-%m-%d %H:%M:%S", time_local)[0:7]
+            sold_month = datetime.strftime(
+                q.sold_time, "%Y-%m-%d %H:%M:%S")[0:7]
             if not self.check_exist(retList, sold_month):
                 object = ReturnObject()
                 object.sold_month = sold_month
@@ -92,10 +93,9 @@ class PricesResource(resources.MongoEngineResource):
     avg_price = fields.FloatField(attribute='avg_price')
 
     class Meta:
-        queryset = Prices.objects.all()
         allowed_methods = ('get')
-        excludes = ['resource_uri', 'id']
         resource_name = 'prices'
+        authorization = Authorization()
 
     def get_object_list(self, request):
         try:
@@ -111,7 +111,8 @@ class PricesResource(resources.MongoEngineResource):
         time_start = datetime.strptime(self.timeStart, '%Y-%m-%d %H:%M:%S')
         time_end = datetime.strptime(self.timeEnd, '%Y-%m-%d %H:%M:%S')
 
-        queryset = goods_sales.objects(goods_id=self.gid, sold_time__gte=time_start, sold_time__lt=time_end)
+        queryset = goods_sales.objects(
+            goods_id=self.gid, sold_time__gte=time_start, sold_time__lt=time_end)
         if queryset is None:
             return
 
@@ -133,15 +134,14 @@ class PricesResource(resources.MongoEngineResource):
     def obj_get_list(self, bundle, **kwargs):
         return self.get_object_list(bundle.request)
 
+
 class ChartResource(resources.MongoEngineResource):
     count = fields.IntegerField(attribute='count')
     price = fields.FloatField(attribute='price')
     time = fields.CharField(attribute='time')
 
     class Meta:
-        queryset = Charts.objects.all()
         allowed_methods = ('get')
-        excludes = ['resource_uri', 'id']
         authorization = Authorization()
         resource_name = 'chart'
 
