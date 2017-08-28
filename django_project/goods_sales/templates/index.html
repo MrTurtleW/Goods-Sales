@@ -133,58 +133,6 @@
 				};
 				myChart.setOption(option);
 			}
-			// xAxisFunc = function(data){
-			// 	var baseDateStr = "2014-1-1 00:00:00"
-			// 	var base = +new Date(Date.parse(baseDateStr.replace(/-/g, "/")));
-			// 	var oneHour = 3600 * 1000;
-			// 	var date = [];
-			// 	var pricesData = {};
-			// 	var salesData = {};
-			// 	var ret = {};
-
-			// 	for(var i = 0; i < 12000; i++){
-			// 		var now = new Date(base);
-			// 		base += oneHour;
-			// 		var currentHour = now.getFullYear();
-			// 		if((now.getMonth()+1)<10){
-			// 			currentHour = currentHour + "-0" + (now.getMonth()+1);
-			// 		}
-			// 		else{
-			// 			currentHour = currentHour + "-" + (now.getMonth()+1);
-			// 		}
-			// 		if(now.getDate()<10){
-			// 			currentHour = currentHour + "-0" + now.getDate();
-			// 		}
-			// 		else{
-			// 			currentHour = currentHour + "-" + now.getDate();
-			// 		}
-			// 		if(now.getHours()<10){
-			// 			currentHour = currentHour + " 0" + now.getHours()+":00:00";
-			// 		}
-			// 		else{
-			// 			currentHour = currentHour + " " + now.getHours()+":00:00";
-			// 		}
-			// 		//console.log(currentHour);
-			// 		date.push(currentHour);
-			// 	}
-
-			// 	for(var o in data.objects){
-			// 		// var price = {};
-			// 		// price[data.objects[o].time] = data.objects[o].price;
-			// 		// pricesData.push(price);
-
-			// 		// var count = {}
-			// 		// count[data.objects[o].time] = data.objects[o].count;
-			// 		// salesData.push(count);
-			// 		pricesData[data.objects[o].time] = data.objects[o].price;
-			// 		salesData[data.objects[o].time] = data.objects[o].count;
-			// 	}
-			// 	ret.date = date;
-			// 	ret.pricesData = pricesData;
-			// 	ret.salesData = salesData;
-			// 	console.log(ret);
-			// 	return ret;
-			// }
 			xAxisFunc = function(){
 				var baseDateStr = "2014-1-1 00:00:00"
 				var base = +new Date(Date.parse(baseDateStr.replace(/-/g, "/")));
@@ -295,18 +243,6 @@
 								color: 'rgb(255, 70, 131)'
 							}
 						},
-						// areaStyle: {
-						// 	normal: {
-						// 		color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-						// 			offset: 0,
-						// 			color: 'rgb(255, 158, 68)'
-						// 		}, {
-						// 			offset: 1,
-						// 			color: 'rgb(255, 70, 131)'
-						// 		}])
-						// 	}
-						// },
-						
 						data:d
 					}
 					]
@@ -338,6 +274,9 @@
 						var d = dataFunc(data);
 						printChart(d.pricesData, date, 'main', 'price', '价格数据');
 						printChart(d.salesData, date, 'main2', 'sale', '销量数据');
+					},
+					error:function(data){
+						alert("error acquiring data!");
 					}
 				});
 			});
@@ -362,6 +301,9 @@
 						$("#main").append("<h4>最高价格："+data.objects[0].max_price+"</h4>");
                         $("#main").append("<h4>最低价格："+data.objects[0].min_price+"</h4>");
                         $("#main").append("<h4>平均价格："+data.objects[0].avg_price+"</h4>");
+					},
+					error:function(data){
+						alert("error acquiring data!");
 					}
 				})
 			});
@@ -378,6 +320,9 @@
 						for(var o in data.objects){
 							$("#main").append("<h4>月份:"+data.objects[o].sold_month+", 销量:"+data.objects[o].count+"</h4>");
 						}
+					},
+					error:function(data){
+						alert("error acquiring data!");
 					}
 				});
 			});

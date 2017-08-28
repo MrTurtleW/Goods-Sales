@@ -116,7 +116,6 @@ class PricesResource(resources.MongoEngineResource):
         if queryset is None:
             return
 
-        print len(queryset)
         price = []
         retList = []
         for q in queryset:
@@ -142,8 +141,8 @@ class ChartResource(resources.MongoEngineResource):
 
     class Meta:
         allowed_methods = ('get')
-        authorization = Authorization()
         resource_name = 'chart'
+        authorization = Authorization()
 
     def get_object_list(self, request):
         try:
@@ -161,11 +160,9 @@ class ChartResource(resources.MongoEngineResource):
         current_count = 0
 
         for q in queryset:
-            # print q.sold_timestamp, q.sold_price
-            time_local = time.localtime(q.sold_timestamp)
-            sold_hour = time.strftime("%Y-%m-%d %H:%M:%S", time_local)[0:13]
-            # print sold_hour, current_hour
-            # print current_prices
+
+            sold_hour = datetime.strftime(q.sold_time, "%Y-%m-%d %H:%M:%S")[0:13]
+
             if current_hour == "":
                 current_hour = sold_hour
                 current_count = 1
